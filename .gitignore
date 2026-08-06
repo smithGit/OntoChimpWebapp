@@ -4,10 +4,23 @@ node_modules
 
 # .env files
 .env*
+# includes:
+# .env.local
+# .env.*.local
+
+# Dependencies
+node_modules/
+
+# Azurite local storage emulator files
+__azurite_db_*.json
+# azurite_db_blob.json
+# azurite_db_blob_extent.json
+# azurite_db_queue.json
+# azurite_db_queue_extent.json
 
 # Quasar core related directories
-.quasar
-/dist
+.quasar/
+dist/
 /quasar.config.*.temporary.compiled*
 
 # Cordova related directories and files
