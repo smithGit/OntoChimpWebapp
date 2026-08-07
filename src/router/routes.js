@@ -5,8 +5,8 @@ const routes = [
     children: [
       { path: "", component: () => import("@/pages/IndexPage.vue") },
       {
-        path: "ontochimpweb",
-        component: () => import("@/pages/OntoChimpWeb.vue"),
+        path: "display-tmd-results",
+        component: () => import("@/pages/DisplayTermModelDoc.vue"),
       },
       {
         path: "quick-analysis",

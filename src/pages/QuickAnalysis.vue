@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-md">
+  <q-page class="q-pa-sm">
     <div class="quick-analysis-page q-mx-auto">
       <!-- Page heading -->
       <div class="text-h4 text-primary text-weight-bold">Quick Analysis</div>
@@ -17,7 +17,7 @@
 
         <q-separator />
 
-        <q-card-section class="q-gutter-md">
+        <q-card-section class="q-gutter-sm">
           <!-- A. Domain -->
           <q-input
             v-model="txtDomain"
@@ -29,7 +29,7 @@
           <div class="text-subtitle1 text-weight-medium q-mb-sm">
             Select Target Ontology
           </div>
-          <div class="row q-col-gutter-sm">
+          <div class="row q-col-gutter-xs">
             Select one Target Ontology and optionally one or more Related
             Reference Ontologies. Enter the ontology acronyms that can be found
             in OntoBee (** add link here...) or BioPortalThe selected ontologies
@@ -37,7 +37,7 @@
             document, to indicate where a key term or similar term may already
             exist in the selected ontologies.
           </div>
-          <div class="row q-col-gutter-md">
+          <div class="row q-col-gutter-xs">
             <div class="col-12 col-md-4">
               <q-input
                 v-model="targetOntology"
