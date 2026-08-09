@@ -321,9 +321,11 @@ interface TermsResponse {
 
 const $q = useQuasar();
 
+// 8/9/26 Github > Settings > Actions > Secrets > Variables > New repository secret
+// was set to the Azure URL for the FastAPI endpoint.
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000";
-alert(`API_BASE_URL is set to: ${API_BASE_URL}`);
+alert(`API_BASE_URL from local / Actions settings is set to: ${API_BASE_URL}`);
 // for ref the Azure value is:
 /* ---------------------------------------------------------
    Input values
