@@ -1,64 +1,34 @@
 <template>
   <q-page class="q-pa-sm">
-    <div class="quick-analysis-page q-mx-auto">
-      <!-- Page heading -->
-      <div class="text-h4 text-primary text-weight-bold">Quick Analysis</div>
+    <div class="text-subtitle1 q-mt-xs q-mb-sm">
+      Analyze one document without creating a project. Quick Analysis results
+      are not retained as a registered project.
+    </div>
 
-      <div class="text-subtitle1 q-mt-sm q-mb-lg">
-        Analyze one document without creating a project. Quick Analysis results
-        are not retained as a registered project.
-      </div>
+    <!-- Input form -->
+    <q-card flat bordered>
+      <q-card-section class="q-py-sm">
+        <div class="text-h6 text-primary">Analysis Inputs</div>
+      </q-card-section>
 
-      <!-- Input form -->
-      <q-card flat bordered>
-        <q-card-section>
-          <div class="text-h6 text-primary">Analysis Inputs</div>
-        </q-card-section>
+      <q-separator />
 
-        <q-separator />
-
-        <q-card-section class="q-gutter-sm">
-          <!-- A. Domain -->
-          <q-input
-            v-model="txtDomain"
-            outlined
-            label="Domain"
-            hint="Enter your term for the domain of interest."
-            :disable="isProcessing"
-          />
-          <div class="text-subtitle1 text-weight-medium q-mb-sm">
-            Select Target Ontology
+      <q-card-section class="q-pa-sm">
+        <!-- A. Domain + B. LLM selection -->
+        <div class="row q-col-gutter-md items-start q-mb-sm">
+          <div class="col-12 col-md-5">
+            <q-input
+              v-model="txtDomain"
+              outlined
+              dense
+              label="Domain"
+              hint="Enter your term for the domain of interest."
+              :disable="isProcessing"
+            />
           </div>
-          <div class="row q-col-gutter-xs">
-            Select one Target Ontology and optionally one or more Related
-            Reference Ontologies. Enter the ontology acronyms that can be found
-            in OntoBee (** add link here...) or BioPortalThe selected ontologies
-            will be used to filter the key concepts identified in the uploaded
-            document, to indicate where a key term or similar term may already
-            exist in the selected ontologies.
-          </div>
-          <div class="row q-col-gutter-xs">
-            <div class="col-12 col-md-4">
-              <q-input
-                v-model="targetOntology"
-                outlined
-                label="Target Ontology"
-                hint="BioPortal acronym"
-              />
-            </div>
 
-            <div class="col-12 col-md-8">
-              <q-input
-                v-model="relatedOntologies"
-                outlined
-                label="Related Reference Ontologies, comma-separated (optional)"
-                hint="Comma-separated BioPortal acronyms"
-              />
-            </div>
-          </div>
-          <!-- C. LLM selection -->
-          <div>
-            <div class="text-subtitle1 text-weight-medium q-mb-sm">
+          <div class="col-12 col-md-7">
+            <div class="text-body1 text-weight-medium q-mb-xs">
               Select one or more LLMs
             </div>
 
@@ -67,256 +37,262 @@
               :options="llmOptions"
               type="checkbox"
               inline
+              dense
               color="primary"
               :disable="isProcessing"
             />
 
-            <div class="text-caption text-grey-7 q-mt-xs">
+            <div class="text-caption text-grey-7">
               Select between one and three models.
             </div>
           </div>
-          <!-- B. Text-file upload -->
-          <q-file
-            v-model="selectedFile"
-            outlined
-            clearable
-            accept=".txt,text/plain"
-            label="Select reference document"
-            hint="Choose one plain-text (.txt) document."
-            max-files="1"
-            :disable="isProcessing"
-            @update:model-value="onFileSelected"
-            @rejected="onFileRejected"
-          >
-            <template #prepend>
-              <q-icon name="upload_file" />
-            </template>
-          </q-file>
+        </div>
 
-          <q-banner
-            v-if="fileValidationMessage"
-            rounded
-            :class="
-              fileIsValid ? 'bg-green-1 text-green-9' : 'bg-red-1 text-red-9'
-            "
-          >
-            <template #avatar>
-              <q-icon
-                :name="fileIsValid ? 'check_circle' : 'error'"
-                :color="fileIsValid ? 'positive' : 'negative'"
-              />
-            </template>
+        <!-- C. Ontology selection -->
+        <div class="text-body2 text-grey-8 q-mb-xs">
+          Select one Target Ontology and optionally one or more Related
+          Reference Ontologies. Enter ontology acronyms found in OntoBee or
+          BioPortal. The selected ontologies will be used to indicate where
+          identified key terms or similar terms may already exist.
+        </div>
 
-            {{ fileValidationMessage }}
-          </q-banner>
-
-          <!-- D. Target ontology
-          <q-input
-            v-model="targetOntology"
-            outlined
-            label="Target Ontology"
-            hint="Enter the BioPortal acronym for the ontology being enhanced."
-            :disable="isProcessing"
-          />
-          -->
-
-          <!-- E. Related ontologies -->
-          <!-- <q-input
-            v-model="relatedOntologies"
-            outlined
-            label="Related Reference Ontologies (optional)"
-            hint="Enter comma-separated BioPortal ontology acronyms."
-            :disable="isProcessing"
-          <q-input
-            v-model="relatedOntologies"
-            outlined
-            label="Related Reference Ontologies (optional)"
-            hint="Enter comma-separated BioPortal ontology acronyms."
-            :disable="isProcessing"
-          /> -->
-
-          <!-- F. Prompt prefix -->
-          <q-input
-            v-model="txtPromptPrefix"
-            outlined
-            autogrow
-            type="textarea"
-            label="Query Prompt Prefix"
-            hint="Review or edit the text that will precede the document."
-            :disable="isProcessing"
-          />
-
-          <q-banner class="bg-blue-1 text-blue-10" rounded>
-            <template #avatar>
-              <q-icon name="info" color="primary" />
-            </template>
-
-            This prompt prefix will be appended before the document text. A
-            suffix describing the required JSON output format will also be
-            added. The combined prompt will be submitted to each selected Large
-            Language Model.
-          </q-banner>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-actions align="between" class="q-pa-md">
-          <q-btn
-            flat
-            color="primary"
-            icon="arrow_back"
-            label="Back"
-            :disable="isProcessing"
-            to="/"
-          />
-
-          <div class="q-gutter-sm">
-            <q-btn
-              outline
-              color="primary"
-              icon="restart_alt"
-              label="Reset"
+        <div class="row q-col-gutter-md q-mb-sm">
+          <div class="col-12 col-md-4">
+            <q-input
+              v-model="targetOntology"
+              outlined
+              dense
+              label="Target Ontology"
+              hint="BioPortal acronym"
               :disable="isProcessing"
-              @click="resetInput"
-            />
-
-            <q-btn
-              unelevated
-              color="primary"
-              icon="send"
-              label="Submit"
-              :loading="isProcessing"
-              :disable="!formIsReady"
-              @click="submitPrompt"
             />
           </div>
-        </q-card-actions>
-      </q-card>
 
-      <!-- Processing progress -->
-      <q-card
-        v-if="isProcessing || processingStarted"
-        flat
-        bordered
-        class="q-mt-lg"
-      >
-        <q-card-section>
-          <div class="row items-center justify-between">
-            <div>
-              <div class="text-h6 text-primary">Processing Progress</div>
-
-              <div class="text-body2 text-grey-7 q-mt-xs">
-                Each selected model is processed separately.
-              </div>
-            </div>
-
-            <q-spinner v-if="isProcessing" color="primary" size="2.2em" />
+          <div class="col-12 col-md-8">
+            <q-input
+              v-model="relatedOntologies"
+              outlined
+              dense
+              label="Related Reference Ontologies (optional)"
+              hint="Comma-separated BioPortal acronyms"
+              :disable="isProcessing"
+            />
           </div>
-        </q-card-section>
+        </div>
 
-        <q-linear-progress v-if="isProcessing" indeterminate color="primary" />
+        <!-- D. Prompt prefix -->
+        <q-input
+          v-model="txtPromptPrefix"
+          outlined
+          dense
+          autogrow
+          type="textarea"
+          label="Query Prompt Prefix"
+          hint="Review or edit the text that will precede the document."
+          :disable="isProcessing"
+          class="q-mb-sm"
+        />
 
-        <q-separator />
+        <q-banner dense class="bg-blue-1 text-blue-10 q-mb-sm" rounded>
+          <template #avatar>
+            <q-icon name="info" color="primary" />
+          </template>
 
-        <q-card-section>
-          <q-table
-            flat
-            bordered
-            dense
-            hide-pagination
-            row-key="model"
-            :rows="modelProgress"
-            :columns="progressColumns"
-            :pagination="{ rowsPerPage: 0 }"
-            no-data-label="No model results have been received yet."
-          >
-            <template #body-cell-status="props">
-              <q-td :props="props">
-                <q-chip
-                  dense
-                  :color="statusColor(props.row.status)"
-                  :text-color="
-                    props.row.status === 'Pending' ? 'dark' : 'white'
-                  "
-                >
-                  {{ props.row.status }}
-                </q-chip>
-              </q-td>
-            </template>
-          </q-table>
-        </q-card-section>
+          This prompt prefix will be appended before the document text. A suffix
+          describing the required JSON output format will also be added. The
+          combined prompt will be submitted to each selected Large Language
+          Model.
+        </q-banner>
 
-        <q-separator />
-
-        <q-card-section>
-          <div class="row q-col-gutter-md">
-            <div class="col-12 col-sm-6">
-              <q-card flat bordered class="q-pa-md text-center">
-                <div class="text-caption text-grey-7">
-                  Total terms identified
-                </div>
-
-                <div class="text-h4 text-primary text-weight-bold">
-                  {{ totalTerms }}
-                </div>
-              </q-card>
-            </div>
-
-            <div class="col-12 col-sm-6">
-              <q-card flat bordered class="q-pa-md text-center">
-                <div class="text-caption text-grey-7">Total unique terms</div>
-
-                <div class="text-h4 text-accent text-weight-bold">
-                  {{ totalUniqueTerms }}
-                </div>
-              </q-card>
-            </div>
-          </div>
-        </q-card-section>
-
-        <q-card-actions
-          v-if="processingComplete"
-          align="center"
-          class="q-pa-md"
+        <!-- E. Text-file upload -->
+        <q-file
+          v-model="selectedFile"
+          outlined
+          dense
+          clearable
+          accept=".txt,text/plain"
+          label="Select reference document"
+          hint="Choose one plain-text (.txt) document."
+          max-files="1"
+          :disable="isProcessing"
+          @update:model-value="onFileSelected"
+          @rejected="onFileRejected"
         >
+          <template #prepend>
+            <q-icon name="upload_file" />
+          </template>
+        </q-file>
+
+        <q-banner
+          v-if="fileValidationMessage"
+          dense
+          rounded
+          class="q-mt-xs"
+          :class="
+            fileIsValid ? 'bg-green-1 text-green-9' : 'bg-red-1 text-red-9'
+          "
+        >
+          <template #avatar>
+            <q-icon
+              :name="fileIsValid ? 'check_circle' : 'error'"
+              :color="fileIsValid ? 'positive' : 'negative'"
+            />
+          </template>
+
+          {{ fileValidationMessage }}
+        </q-banner>
+      </q-card-section>
+
+      <q-card-actions align="between" class="q-px-sm q-py-xs">
+        <q-btn
+          flat
+          dense
+          color="primary"
+          icon="arrow_back"
+          label="Back"
+          :disable="isProcessing"
+          to="/"
+        />
+
+        <div class="q-gutter-xs">
+          <q-btn
+            outline
+            dense
+            color="primary"
+            icon="restart_alt"
+            label="Reset"
+            :disable="isProcessing"
+            @click="resetInput"
+          />
+
           <q-btn
             unelevated
-            color="primary"
-            icon="table_view"
-            label="Display Results"
-            @click="displayResults"
-          />
-        </q-card-actions>
-      </q-card>
-
-      <!-- Results card, hidden until Display Results -->
-      <q-card v-show="showResults" flat bordered class="q-mt-lg">
-        <q-card-section>
-          <div class="text-h6 text-primary">Current Term Results</div>
-
-          <div class="text-body2 text-grey-7 q-mt-xs">
-            Prototype display using the current
-            <code>term_model_doc</code> contents.
-          </div>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <q-table
-            flat
-            bordered
             dense
-            row-key="id"
-            :rows="termResults"
-            :columns="resultColumns"
-            :loading="resultsLoading"
-            :pagination="{ rowsPerPage: 0 }"
-            no-data-label="No term records were returned."
+            color="primary"
+            icon="send"
+            label="Submit"
+            :loading="isProcessing"
+            :disable="!formIsReady"
+            @click="submitPrompt"
           />
-        </q-card-section>
-      </q-card>
-    </div>
+        </div>
+      </q-card-actions>
+    </q-card>
+    <!-- Processing progress -->
+    <q-card
+      v-if="isProcessing || processingStarted"
+      flat
+      bordered
+      class="q-mt-lg"
+    >
+      <q-card-section>
+        <div class="row items-center justify-between">
+          <div>
+            <div class="text-h6 text-primary">Processing Progress</div>
+
+            <div class="text-body2 text-grey-7 q-mt-xs">
+              Each selected model is processed separately.
+            </div>
+          </div>
+
+          <q-spinner v-if="isProcessing" color="primary" size="2.2em" />
+        </div>
+      </q-card-section>
+
+      <q-linear-progress v-if="isProcessing" indeterminate color="primary" />
+
+      <q-separator />
+
+      <q-card-section>
+        <q-table
+          flat
+          bordered
+          dense
+          hide-pagination
+          row-key="model"
+          :rows="modelProgress"
+          :columns="progressColumns"
+          :pagination="{ rowsPerPage: 0 }"
+          no-data-label="No model results have been received yet."
+        >
+          <template #body-cell-status="props">
+            <q-td :props="props">
+              <q-chip
+                dense
+                :color="statusColor(props.row.status)"
+                :text-color="props.row.status === 'Pending' ? 'dark' : 'white'"
+              >
+                {{ props.row.status }}
+              </q-chip>
+            </q-td>
+          </template>
+        </q-table>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-section>
+        <div class="row q-col-gutter-md">
+          <div class="col-12 col-sm-6">
+            <q-card flat bordered class="q-pa-md text-center">
+              <div class="text-caption text-grey-7">Total terms identified</div>
+
+              <div class="text-h4 text-primary text-weight-bold">
+                {{ totalTerms }}
+              </div>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-sm-6">
+            <q-card flat bordered class="q-pa-md text-center">
+              <div class="text-caption text-grey-7">Total unique terms</div>
+
+              <div class="text-h4 text-accent text-weight-bold">
+                {{ totalUniqueTerms }}
+              </div>
+            </q-card>
+          </div>
+        </div>
+      </q-card-section>
+
+      <q-card-actions v-if="processingComplete" align="center" class="q-pa-md">
+        <q-btn
+          unelevated
+          color="primary"
+          icon="table_view"
+          label="Display Results"
+          @click="displayResults"
+        />
+      </q-card-actions>
+    </q-card>
+
+    <!-- Results card, hidden until Display Results -->
+    <q-card v-show="showResults" flat bordered class="q-mt-lg">
+      <q-card-section>
+        <div class="text-h6 text-primary">Current Term Results</div>
+
+        <div class="text-body2 text-grey-7 q-mt-xs">
+          Prototype display using the current
+          <code>term_model_doc</code> contents.
+        </div>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-section>
+        <q-table
+          flat
+          bordered
+          dense
+          row-key="id"
+          :rows="termResults"
+          :columns="resultColumns"
+          :loading="resultsLoading"
+          :pagination="{ rowsPerPage: 0 }"
+          no-data-label="No term records were returned."
+        />
+      </q-card-section>
+    </q-card>
   </q-page>
 </template>
 
@@ -347,7 +323,8 @@ const $q = useQuasar();
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000";
-
+alert(`API_BASE_URL is set to: ${API_BASE_URL}`);
+// for ref the Azure value is:
 /* ---------------------------------------------------------
    Input values
 --------------------------------------------------------- */
@@ -693,7 +670,8 @@ const resultColumns: QTableColumn[] = [
 async function displayResults(): Promise<void> {
   showResults.value = true;
   resultsLoading.value = true;
-
+  let msg = `Fetching term results from FastAPI endpoint...${API_BASE_URL}`;
+  alert(msg);
   try {
     const response = await fetch(`${API_BASE_URL}/select_terms`, {
       method: "GET",
