@@ -26,10 +26,6 @@ const emit = defineEmits<{
 }>();
 
 function showTopic(): void {
-  alert(
-    ".... Step 1 temp>>> in component ShowTopic.vue: topic_id = " +
-      props.topic_id,
-  );
   emit("show-topic", props.topic_id);
 }
 </script>

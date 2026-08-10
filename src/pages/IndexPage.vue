@@ -82,7 +82,6 @@ const router = useRouter();
 
 function startQuickAnalysis() {
   // Navigate to the quick analysis page
-  alert("quick analysis!!");
   router.push("/quick-analysis");
 }
 

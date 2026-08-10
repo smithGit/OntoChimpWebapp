@@ -66,7 +66,6 @@ watch(
 );
 
 async function loadTopicContent() {
-  alert(" >>>  topic_id = " + props.topic_id);
   try {
     // const htmlContent = await get_topic_md_to_html(props.topic_id);
     const htmlContent = await get_topic_md_to_html(props.topic_id);

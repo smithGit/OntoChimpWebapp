@@ -108,13 +108,10 @@ const linksList = [
 const leftDrawerOpen = ref(false);
 
 function show_left_panel_topic(topicId: string) {
-  console.log("show_left_panel_topic: " + topicId);
-  alert("Step 2 >>> captured emit: now show_left_panel_topic: " + topicId);
   void router.push({
     name: "show-selected-topic",
     params: { topic_id: topicId },
   });
-  alert("step 2a after router push: now show_left_panel_topic: " + topicId);
 }
 
 function toggleLeftDrawer() {

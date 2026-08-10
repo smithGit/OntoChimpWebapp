@@ -6,7 +6,7 @@ export async function get_topic_md_to_html(
   topicId: string
 ): Promise<string> {
   const filename = topicId + ".md"
-  alert("IN GET HTML: Filename = " + filename)
+  // alert("IN GET HTML: Filename = " + filename)
   const response = await fetch(`/data/${filename}`)
 
   if (!response.ok) {
@@ -16,8 +16,7 @@ export async function get_topic_md_to_html(
   }
 
   const markdownText = await response.text()
-  alert("Markdown Text = " + markdownText)
+  // alert("Markdown Text = " + markdownText)
   const htmlText = await marked.parse(markdownText)
-  alert("HTML Text = " + htmlText)
   return htmlText
 }
