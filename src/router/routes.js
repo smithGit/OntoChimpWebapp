@@ -16,6 +16,12 @@ const routes = [
         path: "research-workspace",
         component: () => import("@/pages/ResearchWorkspace.vue"),
       },
+      {
+        path: "topic/:topic_id",
+        name: "show-selected-topic",
+        component: () => import("@/pages/ShowSelectedTopic.vue"),
+        props: true,
+      },
     ],
   },
 

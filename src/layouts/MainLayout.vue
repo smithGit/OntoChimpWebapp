@@ -27,7 +27,17 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label header> Find Out More Ess..Links </q-item-label>
+        <q-item-label header> Topics </q-item-label>
+
+        <ShowTopics
+          v-for="topic in topicsList"
+          :key="topic.topic_id"
+          v-bind="topic"
+          @show-topic="show_left_panel_topic"
+        />
+      </q-list>
+      <q-list>
+        <q-item-label header> Helpful Links </q-item-label>
 
         <EssentialLink
           v-for="link in linksList"
@@ -43,10 +53,25 @@
   </q-layout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import ShowTopics from "@/components/ShowTopics.vue";
 import EssentialLink from "@/components/EssentialLink.vue";
 
+const router = useRouter();
+const topicsList = [
+  {
+    label: "Overview",
+    caption: "System Overview",
+    topic_id: "T01_Overview",
+  },
+  {
+    label: "Quick Analysis",
+    caption: "Single Document Analysis",
+    topic_id: "T03_QuickAnalysis",
+  },
+];
 const linksList = [
   {
     label: "Overview",
@@ -55,16 +80,10 @@ const linksList = [
     link: "https://quasar.dev",
   },
   {
-    label: "Quick Analysis",
-    caption: "quasar.dev",
+    label: "Go to OntoBee",
+    caption: "Ontology Lookup Service",
     icon: "school",
-    link: "https://quasar.dev",
-  },
-  {
-    label: "Research Workspace",
-    caption: "quasar.dev",
-    icon: "school",
-    link: "https://quasar.dev",
+    link: "https://ontobee.org/",
   },
   {
     label: "About",
@@ -87,6 +106,16 @@ const linksList = [
 ];
 
 const leftDrawerOpen = ref(false);
+
+function show_left_panel_topic(topicId: string) {
+  console.log("show_left_panel_topic: " + topicId);
+  alert("Step 2 >>> captured emit: now show_left_panel_topic: " + topicId);
+  void router.push({
+    name: "show-selected-topic",
+    params: { topic_id: topicId },
+  });
+  alert("step 2a after router push: now show_left_panel_topic: " + topicId);
+}
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
