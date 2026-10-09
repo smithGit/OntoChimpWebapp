@@ -81,7 +81,10 @@ interface TermsResponse {
 
 // const API_BASE_URL =
 //   'https://YOUR-AZURE-APP-NAME.azurewebsites.net'
-const API_BASE_URL = "http://127.0.0.1:8000"; // Local FastAPI server
+// const API_BASE_URL = "http://127.0.0.1:8000"; // Local FastAPI server
+// 10/8/26 << Found this error; trying to see if it fixes Azure issue!
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000";
 
 const terms = ref<TermRecord[]>([]);
 const loading = ref(false);

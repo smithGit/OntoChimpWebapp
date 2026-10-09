@@ -7,6 +7,7 @@
 Folder: cd "D:\OntoChimpFE\OntoChimpWebapp\src"
 Execution: yarn run dev
 
+Azure URL: ontochimpwebapp-f5gab5efd6dgf7fz.northcentralus-01.azurewebsites.net
 -->
 
 <template>

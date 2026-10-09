@@ -39,6 +39,15 @@
                 @click="startQuickAnalysis"
               />
             </q-card-actions>
+            <q-card-actions align="center">
+              <q-btn
+                color="primary"
+                label="Start Refactor"
+                icon="description"
+                unelevated
+                @click="runQuickAnalysis"
+              />
+            </q-card-actions>
           </q-card>
         </div>
 
@@ -83,6 +92,13 @@ const router = useRouter();
 function startQuickAnalysis() {
   // Navigate to the quick analysis page
   router.push("/quick-analysis");
+}
+
+function runQuickAnalysis() {
+  // Navigate to the quick analysis page
+  // 10/8/26 refactoring
+  // router.push("/quick-analysis");
+  alert("we will refactor: calls local function to run quick analysis");
 }
 
 function enterWorkspace() {

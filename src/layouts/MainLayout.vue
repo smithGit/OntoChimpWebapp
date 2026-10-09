@@ -21,7 +21,7 @@
           >
         </q-toolbar-title>
 
-        <div>Version 0.1 Quasar v{{ $q.version }}</div>
+        <div>Version 0.3 Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 

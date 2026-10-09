@@ -687,8 +687,6 @@ async function registerRun(): Promise<void> {
     Enable the Display Results (and later download TermTable.)
   */
   isLlmProcessing.value = true;
-  const msg = `isLlmProcessing set to ${isLlmProcessing.value}. Submitting to FastAPI for register_run...`;
-  console.log(msg);
   const ocRequestRegRun: OcRequestRegRun = {
     // "qk_analysis" is the code for register_run to create an analysis-run project id
     project_id: "qk_analysis",
@@ -696,8 +694,11 @@ async function registerRun(): Promise<void> {
     selected_model_id_list: selectedModels.value,
     text_filename: selectedFile.value.name,
   }; // text_filename shows error but does not seem to matter...
-  console.log("Submitting to FastAPI for register_run...");
+  console.log("Step A: Submitting to FastAPI for register_run.");
   console.log(ocRequestRegRun);
+  const msg = `isLlmProcessing set to ${isLlmProcessing.value}.`;
+  console.log(msg);
+
   // initialize response object
   let ocResponseRegRun: OcResponseRegRun;
   try {
@@ -756,12 +757,14 @@ async function runAllModels(ar_key_list: number[]): Promise<void> {
     return;
   }
 
-  console.log("Beginning LLM loop for these models:", ar_key_list);
+  console.log(
+    `Step B: Beginning LLM loop for these models:${ar_key_list.join(", ")}`,
+  );
   // Main result of llm extracts: record the ar_key for each
   // delete: const analysis_run_keys: number[] = [];
   for (const ar_key of ar_key_list) {
     console.log(
-      `Submitting document to FastAPI for model with ar_key: ${ar_key}`,
+      `Step B1:Submitting document to FastAPI for model with ar_key: ${ar_key}`,
     );
     const ocRequestLLM: OcRequestLLM = {
       ar_key: ar_key,
@@ -773,7 +776,9 @@ async function runAllModels(ar_key_list: number[]): Promise<void> {
     formData.append("document", selectedFile.value);
     const ocResponseLLM: OcResponseLLM = await submitModelPrompt(formData);
     // TODO add error case...***
-    console.log("LLM extract for model-doc complete. Now load results to DB.");
+    console.log(
+      "Step B1_end: LLM extract for model-doc complete. Now load results to DB.",
+    );
   }
 
   /*
@@ -795,7 +800,7 @@ async function runAllModels(ar_key_list: number[]): Promise<void> {
 // async function submitModelPrompt(formData: FormData): Promise<void> {
 async function submitModelPrompt(formData: FormData): Promise<OcResponseLLM> {
   // send formData to FastAPI and get result for data and model
-  console.log(`sending formData: ${formData}`);
+  console.log(`Step B2: sending formData: ${formData}`);
   try {
     const response = await fetch(`${API_BASE_URL}/extract_key_concepts`, {
       method: "POST",
